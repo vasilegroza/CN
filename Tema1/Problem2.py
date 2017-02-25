@@ -1,5 +1,6 @@
 import random
 from Problem1 import compute_u
+from tkinter import *
 def check_associativity(u):
     found = False
     y = z = u
@@ -13,14 +14,22 @@ def check_associativity(u):
         right_pro = x * (y * z)
         found = left_sum != right_sum and left_pro != right_pro
 
-    print("Asociativitatea nu mai este justa pentru x =", x)
-    print('{left} != {right} => {result}'.format(left=left_sum,
-                                                 right=right_sum,
-                                                 result=found))
+    msg = "Asociativitatea nu mai este justa pentru x ={x}".format(x=x)
+    sum_msg = 'Suma:     {left} != {right}'.format(left=left_sum,
+                                                    right=right_sum)
 
-    print('{left} != {right} => {result}'.format(left=left_pro,
-                                                 right=right_pro,
-                                                 result=found))
+    pro_msg = 'Produs:  {left} != {right} '.format(left=left_pro,
+                                                      right=right_pro)
+    return msg,sum_msg, pro_msg
 if __name__ == "__main__":
     m,u = compute_u()
-    check_associativity(u)
+    msg, sum_msg, pro_msg = check_associativity(u)
+
+    root = Tk()
+    root.wm_title("Exercitiul2")
+
+    Label(root, text=msg, justify=LEFT).grid(row=0, column=0)
+    Label(root, text=sum_msg, justify=LEFT).grid(row=1, column=0)
+    Label(root, text=pro_msg, justify=LEFT).grid(row=2, column=0)
+
+    root.mainloop()
