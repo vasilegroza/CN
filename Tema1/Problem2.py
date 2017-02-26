@@ -1,6 +1,8 @@
 import random
 from Problem1 import compute_u
 from tkinter import *
+
+
 def check_associativity(u):
     found = False
     y = z = u
@@ -22,11 +24,11 @@ def check_associativity(u):
                                                       right=right_pro)
     return msg,sum_msg, pro_msg
 if __name__ == "__main__":
-    m,u = compute_u()
+    m, u = compute_u()
     msg, sum_msg, pro_msg = check_associativity(u)
 
     root = Tk()
-    root.wm_title("Exercitiul2")
+    root.wm_title("Problem 2")
 
     Label(root, text=msg, justify=LEFT).grid(row=0, column=0)
     Label(root, text=sum_msg, justify=LEFT).grid(row=1, column=0)
