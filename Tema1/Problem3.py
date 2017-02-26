@@ -40,7 +40,6 @@ def p3(x, mod=0, p2=0):
     elif mod == 1:
         y = x * x
         return x * (y * (y * (y * (y * c4 - c3) + c2) - c1) + 1)
-        # return x * (y * (y * (y * (y * c4 - c3) + 0.00833) - 0.166) + 1)
     else:
         y2 = x * x
         y4 = y2 * y2
@@ -61,10 +60,7 @@ def p5(x, mod=0, p3=0):
         return x - c1 * (x ** 3) + c2 * (x ** 5) - c3 * (x ** 7) + c4 * (x ** 9) - c5 * (x ** 11)
     elif mod == 1:
         y = x * x
-        # return x * (1 + y * (y * (y * (y * (c4 - c5 * y) - c3) + c2) - c1))
         return x * (y * (y * (y * (y * (c4 - y * c5) - c3) + c2) - c1) + 1)
-        # else:
-        #     return p3 *
 
 
 def p6(x, mod=0, p5=0):
@@ -72,9 +68,46 @@ def p6(x, mod=0, p5=0):
         return x - c1 * (x ** 3) + c2 * (x ** 5) - c3 * (x ** 7) + c4 * (x ** 9) - c5 * (x ** 11) + c6 * (x ** 13)
     elif mod == 1:
         y = x * x
-        # return x * ( y * (y * (y * (y * (y * (y * c6  - c5) + c4) - c3) + c2) - c1)+1)
         return x * (y * (y * (y * (y * (y * (y * c6 - c5) + c4) - c3) + c2) - c1) + 1)
 
+def p1_v1(x):
+    return x - c1 * (x ** 3) + c2 * (x ** 5)
+def p1_v2(x):
+    y = x * x
+    return x * (y * (y * c2 - c1) + 1)
+
+def p2_v1(x):
+    return x - c1 * (x ** 3) + c2 * (x ** 5) - c3 * (x ** 7)
+def p2_v2(x):
+    y = x * x
+    return x * (y * (y * (c2 - y * c3) - c1) + 1)
+
+def p3_v1(x):
+    return x - c1 * (x ** 3) + c2 * (x ** 5) - c3 * (x ** 7) + c4 * (x ** 9)
+def p3_v2(x):
+    y = x * x
+    return x * (y * (y * (y * (y * c4 - c3) + c2) - c1) + 1)
+
+
+def p4_v1(x):
+    return x - 0.166 * (x ** 3) + 0.00833 * (x ** 5) - c3 * (x ** 7) + c4 * (x ** 9)
+def p4_v2(x):
+    y = x * x
+    return x * (y * (y * (y * (y * c4 - c3) + 0.00833) - 0.166) + 1)
+
+
+def p5_v1(x):
+    return x - c1 * (x ** 3) + c2 * (x ** 5) - c3 * (x ** 7) + c4 * (x ** 9) - c5 * (x ** 11)
+def p5_v2(x):
+    y = x * x
+    return x * (y * (y * (y * (y * (c4 - y * c5) - c3) + c2) - c1) + 1)
+
+
+def p6_v1(x):
+    return x - c1 * (x ** 3) + c2 * (x ** 5) - c3 * (x ** 7) + c4 * (x ** 9) - c5 * (x ** 11) + c6 * (x ** 13)
+def p6_v2(x):
+    y = x * x
+    return x * (y * (y * (y * (y * (y * (y * c6 - c5) + c4) - c3) + c2) - c1) + 1)
 
 print(p6(rnd, 0))
 print(p6(rnd, 1))
