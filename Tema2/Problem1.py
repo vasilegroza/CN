@@ -35,8 +35,16 @@ class MatrixSolver():
 
 
     def read_from_gui(self):
-        pass
+        a_txt = self.txt_input_a.get("1.0",END)
+        b_txt = self.txt_input_b.get("1.0",END)
 
+        self.a = [[float(x) for x in line.split()] for line in a_txt.split('\n') if line !='']
+        self.b = [float(x) for x in b_txt.split()]
+        self.n = len(self.a)
+        self.d = [0 for x in range(self.n)]
+        # print(self.a)
+        # print(self.b)
+        # print('**********************')
     def find_x(self):
         z = [0 for x in range(self.n)]
         y = [0 for x in range(self.n)]
@@ -50,6 +58,8 @@ class MatrixSolver():
 
         for j in range(self.n - 1, -1, -1):
             x[j] = y[j] - sum([self.a[i][j] * x[i] for i in range(j, self.n)])
+
+
         self.x_cho = x
         print("X = ", x)
         return x
@@ -64,53 +74,75 @@ class MatrixSolver():
         print('solutia aplicand algoritmul din libraria numpy este:')
         print(self.a)
         print(np.linalg.solve(self.a, self.b))
+        self.x_numpy = (np.linalg.solve(self.a, self.b))
 
 
     def compute_norm(self):
+        print("X is")
+        print(self.x_cho)
         distances = np.subtract(np.dot(self.a,self.x_cho),self.b)
         print(sum([abs(d) for d in distances]))
+        self.norm = sum([abs(d) for d in distances])
 
-    def solve(t: Text):
+    def init_gui(self):
+        root.wm_title("tema2")
+        root.geometry('{}x{}'.format(600, 400))
+
+        # t = Text(root, height=5, width=20)
+        Button(root, text="Apasa", command = lambda : self.solve(self.txt_input_a,
+                                                                 self.txt_input_b)).grid()
+        l = Label(root, text="matrix A")
+        l.grid(row=1,column=0)
+        self.txt_input_a.grid(padx = 10)
+        l = Label(root, text="Vector B")
+        l.grid(row=3, column=0)
+        self.txt_input_b.grid(padx=10)
+
+    def solve(self, t1: Text, t2: Text):
         print("work starts...")
-        print(t.get("1.0", END))
-        # print(t.get())
+        self.read_from_gui()
+        # self.read_from_file("input.txt")
+        self.cholesk()
+        self.find_x()
+        self.show_results1()
+        self.lu_decomposition()
+        self.compute_norm()
+        self.show_results2()
+
+
         pass
+    def show_results1(self):
+        Label(root, text="matrix D:").grid(row=1, column=2, padx = 10)
+        ld = Label(root, text = str(self.d))
+        ld.grid(row = 1, column = 3, padx = 10)
+
+        L = [[0 for _ in range(self.n)] for _ in range(self.n)]
+        for i in range(self.n):
+            for j in range(self.n):
+                if i==j:
+                    L[i][j]=1
+                elif i>j:
+                    L[i][j] = self.a[i][j]
+                else:
+                    L[i][j] = 0
+        Label(root, text="matrix L").grid(row = 2, column = 2, padx=10)
+        Label(root, text = str(L)).grid(row = 2, column = 3, padx=10)
+        Label(root, text="detA =").grid(row=3, column=2, padx=10)
+        Label(root, text=str(self.det)).grid(row=3, column=3, padx=10)
+        Label(root, text="Solutia determinata este: ").grid(row=4, column=2, padx=10)
+        Label(root, text=str(self.x_cho)).grid(row=4, column=3, padx=10)
+        pass
+    def show_results2(self):
+        Label(root, text="Solutia calculata cu numPy: ").grid(row=5, column=2, padx=10)
+        Label(root, text=str(self.x_numpy)).grid(row=5, column=3, padx=10)
+        Label(root, text="Norma calculata este:: ").grid(row=6, column=2, padx=10)
+        Label(root, text=str(self.norm)).grid(row=6, column=3, padx=10)
+
 
 if __name__=="__main__":
     root = Tk()
     t1 = Text(root, height=5, width=20)
-    t2 = Text(root, height=5, width=20)
+    t2 = Text(root, height=3, width=20)
     matrixsolver =  MatrixSolver(root, t1, t2)
-    matrixsolver.read_from_file("input.txt")
-    matrixsolver.cholesk()
-    matrixsolver.find_x()
-    matrixsolver.lu_decomposition()
-    matrixsolver.compute_norm()
-# root.wm_title("tema2")
-# root.geometry('{}x{}'.format(400, 400))
-#
-# t = text(root, height=5, width=20)
-# button(root, text="apasa", command = lambda : solve(t)).grid()
-# v = stringvar()
-# l = label(root, text="matrix a")
-# l.grid(row=1,column=0)
-# t.grid(padx = 10)
-# create a frame for the text and scrollbar
-    txt_frm = Frame(root, width=600, height=600)
-    txt_frm.pack(fill="both", expand=True)
-    # ensure a consistent gui size
-    txt_frm.grid_propagate(False)
-    # implement stretchability
-    txt_frm.grid_rowconfigure(0, weight=1)
-    txt_frm.grid_columnconfigure(0, weight=1)
-
-    # create a text widget
-    txt = Text(txt_frm, borderwidth=3, relief="sunken")
-    txt.config(font=("consolas", 12), undo=True, wrap='word')
-    txt.grid(row=0, column=0, sticky="nsew", padx=2, pady=2)
-
-    # create a scrollbar and associate it with txt
-    scrollb = Scrollbar(txt_frm, command=txt.yview)
-    scrollb.grid(row=0, column=1, sticky='nsew')
-    txt['yscrollcommand'] = scrollb.set
+    matrixsolver.init_gui()
     root.mainloop()
