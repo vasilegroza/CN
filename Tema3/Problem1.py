@@ -1,3 +1,6 @@
+from numpy.ctypeslib import prep_array
+
+
 def remove_empty(element):
     return element != ''
 
@@ -20,15 +23,13 @@ def read_matrix(name):
     mat = []
     i = 0
     while i+1 < len(matrix):
-        res = matrix[i][0]
-        duplicates = False
+        matrix_cell = matrix[i][0]
         while matrix[i][1] == matrix[i+1][1] and matrix[i][2] == matrix[i+1][2]:
-            res += matrix[i+1][0]
-            duplicates = True
+            matrix_cell += matrix[i+1][0]
             i += 1
-        mat.append((res, matrix[i][1], matrix[i][2]))
+        mat.append((matrix_cell, matrix[i][1], matrix[i][2]))
         i += 1
-
+    # adaug ultimul element pentru ca in while el nu este adaugat :):):)
     mat.append(matrix[-1])
     matrix = mat
 
@@ -53,6 +54,15 @@ def read_matrix(name):
     col.append((n + 1) * -1)
 
     return n, b, d, val, col
+def testing_result(result_val, result_col, expected_val, expected_col):
+    result_ok = True
+    for i in range(len(result_val)):
+        if(result_val[i]!=expected_val[i] and result_col[i]!=expected_col[i]):
+            print("wrong for i=",i)
+            result_ok =  False
+    return result_ok
+
+
 
 
 def add_a_b():
@@ -66,21 +76,38 @@ def add_a_b():
     m1 = []
     m2 = []
     m3 = []
+    a_new_line = False
+    b_new_line = False
     # cand se termina unul sa termin de adunat si din cealalta matrice
 
     while i < len(a_val) and j < len(b_val):
+
+
+
         if i + 1 == len(a_val):
             break
         if j + 1 == len(b_val):
             break
+        a_new_line = False
+        b_new_line = False
+
         while a_val[i] == 0:
             i += 1
-        row_a = a_col[i - 1] * -1
+            a_new_line = True
+
+        if a_new_line:
+            row_a = a_col[i - 1]* -1
 
         while b_val[j] == 0:
             j += 1
-        row_b = b_col[j - 1] * -1
+            b_new_line = True
 
+        if b_new_line:
+            row_b = b_col[j - 1] * -1
+
+        if((a_new_line or b_new_line )and( row_a == row_b )):
+            m1.append(0)
+            m3.append(- row_a)
         if row_a == row_b:
             if a_col[i] == b_col[j]:
                 # aux = (a_val[i] + b_val[j], row_a, a_col)
@@ -113,22 +140,33 @@ def add_a_b():
             m3.append(b_col[j])
             j += 1
 
-    print("a_val: "+str(a_val[:10]))
-    print("a_col: "+str(a_col[:10]))
-    print()
-    print("b_val: "+str(b_val[:10]))
-    print("b_col: "+str(b_col[:10]))
-
-    print(m1[:11])
-    print(m3[:11])
-
+    aplusb_n, aplusb_b, aplusb_d, aplusb_val, aplusb_col = read_matrix("a+b.txt")
+    is_ok = testing_result(m1,m3, aplusb_val, aplusb_col)
+    if(is_ok):
+        print("a+b=> rezolvat corect ", is_ok)
+    # print("a_val: "+str(a_val[:13]))
+    # print("a_col: "+str(a_col[:13]))
+    # print()
+    # print("b_val: "+str(b_val[:13]))
+    # print("b_col: "+str(b_col[:13]))
+    #
+    # print(m1[:100])
+    # print(m3[:100])
+    #
+    # print(str(aplusb_val[:100]))
+    # print(str(aplusb_col[:100]))
 
 
 add_a_b()
 
-r_n, r_b, r_d, r_val, r_col = read_matrix("a+b.txt")
 
-
-print()
-print(r_val[:11])
-print()
+#
+# # r_n, r_b, r_d, r_val, r_col = read_matrix("a+b.txt")
+# r_n, r_b, r_d, r_val, r_col = read_matrix("test.txt")
+#
+# print(r_n)
+# print(r_b)
+# print(r_d)
+# print(r_val)
+# print(r_col)
+# # print(r_val[:11])
