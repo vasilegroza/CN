@@ -5,6 +5,7 @@ def nice_time(millis):
         s=str(millis // 1000 % 60),
         mm=str(millis % 1000))
 
+
 def remove_empty(element):
     return element != ''
 
@@ -66,21 +67,18 @@ def read_matrix(name):
     return n, b, d, val, col, metadata
 
 
-def testing_result(result_val, result_col, result_d,  expected_val, expected_col, expected_d):
+def testing_result(result_val, result_col, result_d, expected_val, expected_col, expected_d):
     result_ok = True
     for i in range(len(result_val)):
-        if (result_val[i] != expected_val[i] and result_col[i] != expected_col[i]):
-            print("wrong for i=", i)
+        if abs(result_val[i] - expected_val[i]) > eps and result_col[i] != expected_col[i]:
             result_ok = False
     for i in range(len(result_d)):
-        if result_d[i] != expected_d[i]:
+        if abs(result_d[i] - expected_d[i]) > eps:
             result_ok = False
     return result_ok
 
 
-def add_a_b(a_n, a_d, a_val, a_col , b_n, b_d, b_val, b_col ):
-    # sa nu uitam sa adunam si  diagonalele
-
+def add_a_b(a_n, a_d, a_val, a_col, b_n, b_d, b_val, b_col):
 
     i = 0
     row_a = 0
@@ -116,49 +114,41 @@ def add_a_b(a_n, a_d, a_val, a_col , b_n, b_d, b_val, b_col ):
         if b_new_line:
             row_b = b_col[j - 1] * -1
 
-        if ((a_new_line or b_new_line) and (row_a == row_b)):
+        if (a_new_line or b_new_line) and (row_a == row_b):
             m1.append(0)
             m3.append(- row_a)
         if row_a == row_b:
             if a_col[i] == b_col[j]:
-                # aux = (a_val[i] + b_val[j], row_a, a_col)
-                # matrix.append(aux)
                 m1.append(a_val[i] + b_val[j])
                 m3.append(a_col)
                 i += 1
                 j += 1
             elif a_col[i] < b_col[j]:
-                # aux = (a_val[i], row_a, a_col)
-                # matrix.append(aux)
                 m1.append(a_val[i])
                 m3.append(a_col[i])
                 i += 1
             else:
-                # aux = (b_val[j], row_b, b_col)
-                # matrix.append(aux)
+
                 m1.append(b_val[j])
                 m3.append(b_col[j])
                 j += 1
         elif row_a < row_b:
-            # aux = (a_val[i], row_a, a_col)
-            # matrix.append((a_val[i], row_a, a_col))
             m1.append(a_val[i])
             m3.append(a_col[i])
             i += 1
         else:
-            # matrix.append((b_val[j], row_b, b_col))
             m1.append(b_val[j])
             m3.append(b_col[j])
             j += 1
-    d = [ a_d[i]+b_d[i] for i in range(a_n)]
+
+    d = [a_d[i] + b_d[i] for i in range(a_n)]
     aplusb_n, aplusb_b, aplusb_d, aplusb_val, aplusb_col, metadata_aplusb = read_matrix("a+b.txt")
     is_ok = testing_result(m1, m3, d, aplusb_val, aplusb_col, aplusb_d)
     if (is_ok):
         print("a+b=> rezolvat corect ", is_ok)
 
 
-def multiply_a_b(a_n, a_b, a_d, a_val, a_col, metadata_a, b_n, b_b, b_d, b_val, b_col, metadata_b ):
-
+def multiply_a_b(a_n, a_b, a_d, a_val, a_col, metadata_a, b_n, b_b, b_d, b_val, b_col, metadata_b):
     delta = [[0 for _ in range(a_n)] for _ in range(a_n)]
     for i in range(a_n):
         delta[i][i] = a_d[i] * b_d[i]
@@ -171,7 +161,7 @@ def multiply_a_b(a_n, a_b, a_d, a_val, a_col, metadata_a, b_n, b_b, b_d, b_val, 
 
         for index_a in range(a_line_start + 1, a_line_end, 1):
             a_column = int(a_col[index_a])
-            delta[int(a_line) - 1][a_column-1] += a_val[index_a] * b_d[a_column-1]
+            delta[int(a_line) - 1][a_column - 1] += a_val[index_a] * b_d[a_column - 1]
             b_line_start, b_line_end = metadata_b[a_column], metadata_b[a_column + 1]
             for index_b in range(b_line_start + 1, b_line_end, 1):
                 delta[int(a_line) - 1][int(b_col[index_b]) - 1] += a_val[index_a] * b_val[index_b]
@@ -194,18 +184,45 @@ def multiply_a_b(a_n, a_b, a_d, a_val, a_col, metadata_a, b_n, b_b, b_d, b_val, 
     aorib_n, aorib_b, aorib_d, aorib_val, aorib_col, metadata_aorib = read_matrix("aorib.txt")
 
     is_ok = testing_result(delta_val, delta_col, delta_d, aorib_val, aorib_col, aorib_d)
-    if (is_ok):
-        print("a*b=> rezolvat corect ", is_ok)
+    if is_ok:
+        print("A * B=> corect ", is_ok)
     else:
-        print("a*b=> rezolvat gresit ", is_ok)
+        print("A * B=> gresit ", is_ok)
+
+
+def multiply_matrix_vector(a_n, a_b, a_d, a_val, a_col, metadata_a):
+    is_okay = True
+
+    x = [i for i in range(a_n, 0, -1)]
+    res = []
+    for a_line, a_line_start in metadata_a.items():
+        a_line_end = metadata_a.get(a_line + 1, len(a_val))
+        aux = 0
+        for index_a in range(a_line_start + 1, a_line_end, 1):
+            aux = aux + a_val[int(index_a)] * x[int(a_col[int(index_a)]-1)]
+
+        res.append(aux)
+
+    for i in range(a_n):
+        res[i] += a_d[i] * x[i]
+
+    for i in range(a_n):
+        if abs(res[i] - a_b[i]) > eps:
+            is_okay = False
+
+    if is_okay:
+        print("A * x=> corect ", is_okay)
+    else:
+        print("A * x=> corect ", is_okay)
+
 
 import time
-
 start_time = time.time()
-a_n, a_b, a_d, a_val, a_col, metadata_a = read_matrix("a.txt")
-b_n, b_b, b_d, b_val, b_col, metadata_b = read_matrix("b.txt")
-add_a_b(a_n, a_d, a_val, a_col , b_n, b_d, b_val, b_col)
-multiply_a_b(a_n, a_b, a_d, a_val, a_col, metadata_a, b_n, b_b, b_d, b_val, b_col, metadata_b )
+eps = 1e-10
+ag_n, ag_b, ag_d, ag_val, ag_col, metadata_ga = read_matrix("a.txt")
+bg_n, bg_b, bg_d, bg_val, bg_col, metadata_gb = read_matrix("b.txt")
+add_a_b(ag_n, ag_d, ag_val, ag_col, bg_n, bg_d, bg_val, bg_col)
+multiply_a_b(ag_n, ag_b, ag_d, ag_val, ag_col, metadata_ga, bg_n, bg_b, bg_d, bg_val, bg_col, metadata_gb)
+multiply_matrix_vector(ag_n, ag_b, ag_d, ag_val, ag_col, metadata_ga)
 running_time = time.time() - start_time
 print("Running time is:{time}".format(time=nice_time(running_time * 1000)))
-
