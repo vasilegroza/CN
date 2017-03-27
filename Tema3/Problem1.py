@@ -145,7 +145,7 @@ def add_a_b(a_n, a_d, a_val, a_col, b_n, b_d, b_val, b_col):
     aplusb_n, aplusb_b, aplusb_d, aplusb_val, aplusb_col, metadata_aplusb = read_matrix("a+b.txt")
     is_ok = testing_result(m1, m3, d, aplusb_val, aplusb_col, aplusb_d)
     if (is_ok):
-        print("a+b=> rezolvat corect ", is_ok)
+        print("A + B=> rezolvat corect ", is_ok)
 
 
 def multiply_a_b(a_n, a_b, a_d, a_val, a_col, metadata_a, b_n, b_b, b_d, b_val, b_col, metadata_b):
