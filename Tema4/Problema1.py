@@ -163,6 +163,8 @@ def m_gauss_seidel(path):
     x_c = [0 for _ in range(n+1)]
     x_p = [0 for _ in range(n+1)]
     k = 0
+    if len(d)!= n:
+        return False, None, None
     while True:
         x_p = copy.copy(x_c)
 
@@ -198,6 +200,8 @@ if __name__ == "__main__":
     convergent, solutie, total_error = m_gauss_seidel('m_rar_2017_3.txt')
     if convergent:
         print("Solutia gasita are eroarea:", total_error)
+    elif solutie is None:
+        print("Diagonala principala nu este pozitiv definita")
     else:
         print("Divergenta")
 
