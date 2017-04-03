@@ -1,4 +1,5 @@
 import copy
+import math
 def remove_empty(element):
     return element != ''
 
@@ -182,7 +183,7 @@ def m_gauss_seidel(path):
             x_c[int(line)] = (b[int(line)-1] - suma)/ d[int(line)-1]
 
 
-        delta_x = sum([abs(x_p[i] - x_c[i]) for i in range(n + 1)])
+        delta_x = math.sqrt(sum([abs(x_p[i] - x_c[i])**2 for i in range(n + 1)]))
         k+=1
         if (delta_x<eps or k>10000 or delta_x>10**8):
             break
@@ -190,7 +191,7 @@ def m_gauss_seidel(path):
     a_ori_x = multiply_matrix_vector(x_c[1:], n,b,d,val,col,metadata)
     error = 0
     if delta_x<eps:
-        error = sum([abs(a_ori_x[i]-b[i]) for i in range(n)])
+        error = math.sqrt(sum([abs(a_ori_x[i]-b[i])**2 for i in range(n)]))
         print(error)
     return delta_x<eps, x_c, error
 
@@ -200,8 +201,9 @@ if __name__ == "__main__":
     convergent, solutie, total_error = m_gauss_seidel('m_rar_2017_3.txt')
     if convergent:
         print("Solutia gasita are eroarea:", total_error)
+        print(solutie[:10])
     elif solutie is None:
-        print("Diagonala principala nu este pozitiv definita")
+        print("Diagonala principala are toate elementele nenule")
     else:
         print("Divergenta")
 
